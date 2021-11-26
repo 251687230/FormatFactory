@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#eeeeee"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
         app:layout_constraintTop_toTopOf="parent"
@@ -30,16 +31,72 @@
         android:layout_height="1dp"
         android:background="#999999"
         android:layout_marginTop="10dp"/>
-    <androidx.recyclerview.widget.RecyclerView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/rcv_info"
+        android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintStart_toStartOf="parent"
-        />
-    <Button
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#333"
+            android:textSize="20sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="10dp"
+            android:text="Video Info"
+            android:id="@+id/label_video_info"
+            />
+        <LinearLayout
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/video_info_ll"
+            android:orientation="vertical"
+            android:background="@drawable/shape_bg_white"
+            app:layout_constraintTop_toBottomOf="@id/label_video_info"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="获取文件信息"
-        android:id="@+id/bt_get_info"/>
+        android:textColor="#333"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/video_info_ll"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="10dp"
+        android:text="Audio Info"
+        android:id="@+id/label_audio_info"
+        />
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/audio_info_ll"
+        android:orientation="vertical"
+        android:background="@drawable/shape_bg_white"
+        app:layout_constraintTop_toBottomOf="@id/label_audio_info"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_action_parse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        app:backgroundTint="@color/purple_500"
+        app:rippleColor="@color/purple_700"
+        app:tint="@color/white"
+        android:src="@android:drawable/ic_media_play"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

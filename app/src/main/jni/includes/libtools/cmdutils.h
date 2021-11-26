@@ -48,7 +48,7 @@ extern AVCodecContext *avcodec_opts[AVMEDIA_TYPE_NB];
 extern AVFormatContext *avformat_opts;
 extern AVDictionary *sws_dict;
 extern AVDictionary *swr_opts;
-extern AVDictionary *format_opts, *codec_opts, *resample_opts;
+extern AVDictionary *format_opts, *codec_opts;
 extern int hide_banner;
 
 /**
@@ -59,7 +59,7 @@ void register_exit(void (*cb)(int ret));
 /**
  * Wraps exit with a program-specific cleanup routine.
  */
-int exit_program(int ret);
+int exit_program(int ret) av_noreturn;
 
 /**
  * Initialize dynamic library loading
@@ -87,6 +87,11 @@ void log_callback_help(void* ptr, int level, const char* fmt, va_list vl);
  * Override the cpuflags.
  */
 int opt_cpuflags(void *optctx, const char *opt, const char *arg);
+
+/**
+ * Override the cpucount.
+ */
+int opt_cpucount(void *optctx, const char *opt, const char *arg);
 
 /**
  * Fallback for options that are not explicitly handled, these will be
@@ -233,12 +238,14 @@ void show_help_options(const OptionDef *options, const char *msg, int req_flags,
     { "pix_fmts",    OPT_EXIT,             { .func_arg = show_pix_fmts },    "show available pixel formats" },          \
     { "layouts",     OPT_EXIT,             { .func_arg = show_layouts },     "show standard channel layouts" },         \
     { "sample_fmts", OPT_EXIT,             { .func_arg = show_sample_fmts }, "show available audio sample formats" },   \
+    { "dispositions", OPT_EXIT,            { .func_arg = show_dispositions}, "show available stream dispositions" },    \
     { "colors",      OPT_EXIT,             { .func_arg = show_colors },      "show available color names" },            \
     { "loglevel",    HAS_ARG,              { .func_arg = opt_loglevel },     "set logging level", "loglevel" },         \
     { "v",           HAS_ARG,              { .func_arg = opt_loglevel },     "set logging level", "loglevel" },         \
     { "report",      0,                    { .func_arg = opt_report },       "generate a report" },                     \
     { "max_alloc",   HAS_ARG,              { .func_arg = opt_max_alloc },    "set maximum size of a single allocated block", "bytes" }, \
     { "cpuflags",    HAS_ARG | OPT_EXPERT, { .func_arg = opt_cpuflags },     "force specific cpu flags", "flags" },     \
+    { "cpucount",    HAS_ARG | OPT_EXPERT, { .func_arg = opt_cpucount },     "force specific cpu count", "count" },     \
     { "hide_banner", OPT_BOOL | OPT_EXPERT, {&hide_banner},     "do not show program banner", "hide_banner" },          \
     CMDUTILS_COMMON_OPTIONS_AVDEVICE                                                                                    \
 
@@ -317,7 +324,6 @@ typedef struct OptionGroup {
 
     AVDictionary *codec_opts;
     AVDictionary *format_opts;
-    AVDictionary *resample_opts;
     AVDictionary *sws_dict;
     AVDictionary *swr_opts;
 } OptionGroup;
@@ -414,7 +420,7 @@ int check_stream_specifier(AVFormatContext *s, AVStream *st, const char *spec);
  * @return a pointer to the created dictionary
  */
 AVDictionary *filter_codec_opts(AVDictionary *opts, enum AVCodecID codec_id,
-                                AVFormatContext *s, AVStream *st, AVCodec *codec);
+                                AVFormatContext *s, AVStream *st, const AVCodec *codec);
 
 /**
  * Setup AVCodecContext options for avformat_find_stream_info().
@@ -573,6 +579,11 @@ int show_layouts(void *optctx, const char *opt, const char *arg);
 int show_sample_fmts(void *optctx, const char *opt, const char *arg);
 
 /**
+ * Print a listing containing all supported stream dispositions.
+ */
+int show_dispositions(void *optctx, const char *opt, const char *arg);
+
+/**
  * Print a listing containing all the color names and values recognized
  * by the program.
  */
@@ -637,12 +648,12 @@ void *grow_array(void *array, int elem_size, int *size, int new_size);
 
 #define GET_CH_LAYOUT_NAME(ch_layout)\
     char name[16];\
-    snprintf(name, sizeof(name), "0x%" PRIx64, ch_layout);
+    snprintf(name, sizeof(name), "0x%" dPRIx64, ch_layout);
 
 #define GET_CH_LAYOUT_DESC(ch_layout)\
     char name[128];\
     av_get_channel_layout_string(name, sizeof(name), 0, ch_layout);
 
-double get_rotation(AVStream *st);
+double get_rotation(int32_t *displaymatrix);
 
 #endif /* FFTOOLS_CMDUTILS_H */

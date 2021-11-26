@@ -32,8 +32,6 @@
 
 #include <stdint.h>
 
-#include "version.h"
-
 /**
  * @addtogroup lavu_dict AVDictionary
  * @ingroup lavu_data
@@ -127,7 +125,7 @@ int av_dict_count(const AVDictionary *m);
  *        Passing a NULL value will cause an existing entry to be deleted.
  * @return >= 0 on success otherwise an error code <0
  */
-int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags, int i);
+int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags);
 
 /**
  * Convenience wrapper for av_dict_set that converts the value to a string

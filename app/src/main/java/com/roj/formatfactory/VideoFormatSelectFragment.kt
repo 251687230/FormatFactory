@@ -1,5 +1,7 @@
 package com.roj.formatfactory
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,12 +43,26 @@ class VideoFormatSelectFragment: Fragment() {
 
         adapter.adapterListener = object : AdapterListener{
             override fun onItemClick(position: Int) {
+                var type = 0
                 if(position == 0){
                     //转换为MP4
-
+                    type = AppConstant.EVENT_TO_MP4
                 }
+                val intent =  Intent(Intent.ACTION_GET_CONTENT)
+                intent.type = "video/*" //选择音频
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                startActivityForResult(intent, type)
             }
         }
         return view
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode == Activity.RESULT_OK){
+            val intent = Intent(requireContext(),StartParseActivity::class.java)
+            intent.data = data?.data
+            intent.putExtra("type", AppConstant.EVENT_TO_MP4)
+            startActivity(intent)
+        }
     }
 }

@@ -1,13 +1,15 @@
 package com.roj.formatfactory
 
+import com.roj.formatfactory.beans.AudioParseOption
 import com.roj.formatfactory.beans.MediaInfo
 
 object FFmpegUtils {
-    external fun open(path : String) : Int
 
-    external fun getMediaInfo() : MediaInfo
+    external fun getMediaInfo(path : String) : MediaInfo
 
-    external fun close()
+    external fun parseToMp3(srcPath : String,destPath : String,
+    option : AudioParseOption) : Int
+
 
     init {
         System.loadLibrary("native_lib")

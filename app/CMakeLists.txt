@@ -8,6 +8,12 @@ add_library(native_lib
         SHARED
         src/main/jni/ffmpeg_utils.cpp
         src/main/jni/mylog.c
+        src/main/jni/cmdutils.c
+        src/main/jni/ffmpeg.c
+        src/main/jni/ffmpeg_hw.c
+        src/main/jni/ffmpeg_filter.c
+        src/main/jni/ffmpeg_opt.c
+        src/main/jni/ffmpeg_thread.cpp
         )
 set(libs "${CMAKE_SOURCE_DIR}/libs/arm64-v8a")
 
@@ -46,11 +52,17 @@ function(buildlib)
 
 
     set_target_properties(swscale PROPERTIES IMPORTED_LOCATION ${libs}/libswscale.so)
+
+    add_library(mp3lame SHARED IMPORTED)
+    #  设置目标导入路径，这里是一行
+
+
+    set_target_properties(mp3lame PROPERTIES IMPORTED_LOCATION ${libs}/libmp3lame.so)
 endfunction()
 
 
 buildlib()
-set(ffmpeg avcodec avdevice avfilter avformat avutil swresample swscale)
+set(ffmpeg avcodec avdevice avfilter avformat avutil swresample swscale mp3lame)
 
 target_link_libraries(native_lib ${ffmpeg} log)
 
